@@ -1,4 +1,5 @@
 var express = require('express');
+var GoCardless = require('gocardless')
 var _ = require("underscore");
 
 module.exports = {
