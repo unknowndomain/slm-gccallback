@@ -1,5 +1,5 @@
 var express = require('express');
-var GoCardless = require('gocardless')
+var GoCardless = require('gocardless');
 var _ = require("underscore");
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
         
         app.post('/webhook/:key', function(req, res) {
             if (req.params.key == config.gocardless.secretKey) {
-                if (gocardless.webhookValid(req.body)) { // req.body is a guess
+                if (gc.webhookValid(req.body)) { // req.body is a guess
                     if (req.body.payload.resource_type == "bill") {
                         if (req.body.payload.action == config.gocardless.paidWhen) { // can be either paid or withdrawn (i.e.: paid out)
                             _.each(req.body.payload.bills, function (bill) {
