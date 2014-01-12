@@ -18,7 +18,7 @@ module.exports = {
                             _.each(req.body.payload.bills, function (bill) {
                                 if ((bill.status == config.gocardless.paidWhen) && (bill.source_type == "subscription")) {
                                     // should probably check the amount here
-                                    User.findOne({where: {gc_subscription: bill.source_id}}, function (err, user) {
+                                    res.locals.User.findOne({where: {gc_subscription: bill.source_id}}, function (err, user) {
                                         if (!err && user) {
                                             user.last_payment = new Date();
                                             user.save(function (err,user) {
