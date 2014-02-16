@@ -23,9 +23,13 @@ module.exports = {
                                             user.last_payment = new Date();
                                             user.save(function (err,user) {
                                                 if (err) {
-                                                    console.log("Could not save user: " + user);
+                                                    console.log("Could not save subscription '" + bill.source_id + "' for user: " + user);
                                                 }
                                             });
+                                        }
+                                        else {
+                                            console.log("Could not find user with '" + bill.source_id + "' because: " + err);
+                                            res.send(500, "Database error. Please contact an administrator with the code SLME004");
                                         }
                                     });
                                 }
