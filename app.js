@@ -20,6 +20,11 @@ module.exports = {
                                     // should probably check the amount here
                                     res.locals.User.findOne({where: {gc_subscription: bill.source_id}}, function (err, user) {
                                         if (!err && user) {
+                                            user.historic_events.create({
+                                                "description": "Payment received. Thank you.",
+                                                "type": "membership",
+                                                "value": bill.amount_minus_fees
+                                            });
                                             user.last_payment = new Date();
                                             user.save(function (err,user) {
                                                 if (err) {
