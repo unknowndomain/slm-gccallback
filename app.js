@@ -39,11 +39,8 @@ module.exports = {
                                                 }
                                                 else {
                                                     console.log("Could not save user '" + user.email + "' payment received.");
-                                                    
-
                                                 }
-                                            });;
- 
+                                            });
                                         }
                                         else {
                                             if (!user) {
