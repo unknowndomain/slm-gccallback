@@ -17,8 +17,7 @@ module.exports = {
                     if (req.body.payload.resource_type == "bill") {
                         if (req.body.payload.action == config.gocardless.paidWhen) { // can be either paid or withdrawn (i.e.: paid out)
                             _.each(req.body.payload.bills, function (bill) {
-                                if ((bill.status == config.gocardless.paidWhen) && (bill.source_type == "subscription") && (bill.ammount >= config.gocardless.minimum)) {
-                                    // should probably check the amount here
+                                if ((bill.status == config.gocardless.paidWhen) && (bill.source_type == "subscription") && (bill.amount >= config.gocardless.minimum)) {
                                     res.locals.User.findOne({where: {gc_subscription: bill.source_id}}, function (err, user) {
                                         if (!err && user) {
                                             user.historic_events.create({
