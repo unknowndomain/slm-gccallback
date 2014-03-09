@@ -23,7 +23,7 @@ module.exports = {
                                             user.historic_events.create({
                                                 "description": "Payment received. Thank you.",
                                                 "type": "membership",
-                                                "value": bill.amount_minus_fees
+                                                "renumeration": -parseFloat(bill.amount_minus_fees);
                                             }, function (err, event) {
                                                 if (!err) {
                                                     user.paid();
