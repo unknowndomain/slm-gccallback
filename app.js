@@ -17,39 +17,74 @@ module.exports = {
                     if (req.body.payload.resource_type == "bill") {
                         if (req.body.payload.action == config.gocardless.paidWhen) { // can be either paid or withdrawn (i.e.: paid out)
                             _.each(req.body.payload.bills, function (bill) {
-                                if ((bill.status == config.gocardless.paidWhen) && (bill.source_type == "subscription") && (bill.amount >= config.gocardless.minimum)) {
-                                    res.locals.User.findOne({where: {gc_subscription: bill.source_id}}, function (err, user) {
-                                        if (!err && user) {
-                                            user.historic_events.create({
-                                                "description": "Payment received. Thank you.",
-                                                "type": "membership",
-                                                "renumeration": -parseFloat(bill.amount_minus_fees)
-                                            }, function (err, event) {
-                                                if (!err) {
-                                                    user.paid();
-                                                    user.save(function (err, user) {
-                                                        if (!err) {
-                                                            console.log("User '" + user.email + "' last paid value updated");
-                                                        }
-                                                        else {
-                                                            console.log("Could not save subscription '" + bill.source_id + "' for user: " + user.email);
-                                                        }
-                                                    });
-                                                }
-                                                else {
-                                                    console.log("Could not save user '" + user.email + "' payment received.");
-                                                }
-                                            });
-                                        }
-                                        else {
-                                            if (!user) {
-                                                console.log("Could not find user with '" + bill.source_id);
+                                if (bill.status == config.gocardless.paidWhen) {
+                                    if ((req.body.payload.resource_type == "subscription") && (bill.amount >= config.gocardless.minimum)) {
+                                        res.locals.User.findOne({where: {gc_subscription: bill.source_id}}, function (err, user) {
+                                            if (!err && user) {
+                                                user.historic_events.create({
+                                                    "description": "Payment received. Thank you.",
+                                                    "type": "membership",
+                                                    "renumeration": -parseFloat(bill.amount_minus_fees)
+                                                }, function (err, event) {
+                                                    if (!err) {
+                                                        user.paid();
+                                                        user.save(function (err, user) {
+                                                            if (!err) {
+                                                                console.log("User '" + user.email + "' last paid value updated");
+                                                            }
+                                                            else {
+                                                                console.log("Could not save subscription '" + bill.source_id + "' for user: " + user.email);
+                                                            }
+                                                        });
+                                                    }
+                                                    else {
+                                                        console.log("Could not save user '" + user.email + "' payment received.");
+                                                    }
+                                                });
                                             }
                                             else {
-                                                console.log("Could not find user with '" + bill.source_id + "' because: " + err);
+                                                if (!user) {
+                                                    console.log("Could not find user with '" + bill.source_id);
+                                                }
+                                                else {
+                                                    console.log("Could not find user with '" + bill.source_id + "' because: " + err);
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
+                                    else if (req.body.payload.resource_type == "bill") {
+                                        res.locals.User.findOne({where: {gc_donation: bill.source_id}}, function (err, user) {
+                                            if (!err && user) {
+                                                user.historic_events.create({
+                                                    "description": "Donation received. Thank you.",
+                                                    "type": "membership",
+                                                    "renumeration": -parseFloat(bill.amount_minus_fees)
+                                                }, function (err, event) {
+                                                    if (!err) {
+                                                        user.save(function (err, user) {
+                                                            if (!err) {
+                                                                console.log("User '" + user.email + "' last paid value updated");
+                                                            }
+                                                            else {
+                                                                console.log("Could not save donation '" + bill.source_id + "' for user: " + user.email);
+                                                            }
+                                                        });
+                                                    }
+                                                    else {
+                                                        console.log("Could not save user '" + user.email + "' payment received.");
+                                                    }
+                                                });
+                                            }
+                                            else {
+                                                if (!user) {
+                                                    console.log("Could not find user with '" + bill.source_id);
+                                                }
+                                                else {
+                                                    console.log("Could not find user with '" + bill.source_id + "' because: " + err);
+                                                }
+                                            }
+                                        });
+                                    }
                                 }
                             });
                         }
