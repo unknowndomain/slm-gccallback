@@ -18,7 +18,7 @@ module.exports = {
                         if (req.body.payload.action == config.gocardless.paidWhen) { // can be either paid or withdrawn (i.e.: paid out)
                             _.each(req.body.payload.bills, function (bill) {
                                 if (bill.status == config.gocardless.paidWhen) {
-                                    if ((req.body.payload.resource_type == "subscription") && (bill.amount >= config.gocardless.minimum)) {
+                                    if ((bill.source_type == "subscription") && (parseFloat(bill.amount) >= config.gocardless.minimum)) {
                                         res.locals.User.findOne({where: {gc_subscription: bill.source_id}}, function (err, user) {
                                             if (!err && user) {
                                                 user.historic_events.create({
@@ -44,15 +44,15 @@ module.exports = {
                                             }
                                             else {
                                                 if (!user) {
-                                                    console.log("Could not find user with '" + bill.source_id);
+                                                    console.log("Could not find user with subscription: " + bill.source_id);
                                                 }
                                                 else {
-                                                    console.log("Could not find user with '" + bill.source_id + "' because: " + err);
+                                                    console.log("Could not find user with subscription'" + bill.source_id + "' because: " + err);
                                                 }
                                             }
                                         });
                                     }
-                                    else if (req.body.payload.resource_type == "bill") {
+                                    else if (bill.source_type == "bill") {
                                         res.locals.User.findOne({where: {gc_donation: bill.source_id}}, function (err, user) {
                                             if (!err && user) {
                                                 user.historic_events.create({
@@ -77,10 +77,10 @@ module.exports = {
                                             }
                                             else {
                                                 if (!user) {
-                                                    console.log("Could not find user with '" + bill.source_id);
+                                                    console.log("Could not find user with bill: " + bill.source_id);
                                                 }
                                                 else {
-                                                    console.log("Could not find user with '" + bill.source_id + "' because: " + err);
+                                                    console.log("Could not find user with bill '" + bill.source_id + "' because: " + err);
                                                 }
                                             }
                                         });
