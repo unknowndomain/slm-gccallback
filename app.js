@@ -44,10 +44,10 @@ module.exports = {
                                             }
                                             else {
                                                 if (!user) {
-                                                    console.log("Could not find user with '" + bill.source_id);
+                                                    console.log("Could not find user with subscription: " + bill.source_id);
                                                 }
                                                 else {
-                                                    console.log("Could not find user with '" + bill.source_id + "' because: " + err);
+                                                    console.log("Could not find user with subscription'" + bill.source_id + "' because: " + err);
                                                 }
                                             }
                                         });
@@ -77,10 +77,10 @@ module.exports = {
                                             }
                                             else {
                                                 if (!user) {
-                                                    console.log("Could not find user with '" + bill.source_id);
+                                                    console.log("Could not find user with bill: " + bill.source_id);
                                                 }
                                                 else {
-                                                    console.log("Could not find user with '" + bill.source_id + "' because: " + err);
+                                                    console.log("Could not find user with bill '" + bill.source_id + "' because: " + err);
                                                 }
                                             }
                                         });
